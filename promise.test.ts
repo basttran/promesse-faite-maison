@@ -9,13 +9,14 @@ class Promesse {
 describe("Promise from scratch", () => {
   it("should give back result when task was successful", async () => {
     // given
+    const someValue = Math.random();
     const happyPathPromise = new Promesse((resolve) => {
-      resolve(42);
+      resolve(someValue);
     });
     // when
     const result = await happyPathPromise;
     // then
-    expect(result).toEqual(42);
+    expect(result).toEqual(someValue);
   });
  
 });
