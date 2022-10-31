@@ -1,8 +1,14 @@
 class Promesse {
+
+  private result: any;
  
   constructor(initTask: (resolve: any, reject?: any) => any) {
-   
+    initTask((result) => {
+      this.result = result;
+    });
   }
+
+  then = (onFulfilled: (value: any) => any) => onFulfilled(this.result);
 
 }
 
