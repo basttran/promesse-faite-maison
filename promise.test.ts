@@ -7,7 +7,7 @@ class Promesse {
     });
   }
 
-  then = (onFulfilled: (value: any) => any): Promise<any> => onFulfilled(this.result);
+  then = (onFulfilled: (value: any) => any): Promesse => new Promesse((resolve) => resolve(onFulfilled(this.result)));
 }
 
 describe("Promise from scratch", () => {
