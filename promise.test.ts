@@ -3,7 +3,13 @@ class Promesse {
 
   constructor(initTask: (resolve: any, reject?: any) => any) {
     initTask((result) => {
-      this.result = result;
+      if (result?.then) {
+        result.then((value) => {
+          this.result = value;
+        });
+      } else {
+        this.result = result;
+      }
     });
   }
 
