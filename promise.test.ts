@@ -35,4 +35,17 @@ describe("Promise from scratch", () => {
     // then
     expect(result).toEqual(168);
   });
+
+  it("should be chainable (like flatMap)", async () => {
+    // given
+    const happyPathPromise = new Promesse((resolve) => {
+      resolve(42);
+    });
+    // when
+    const result = await happyPathPromise
+      .then((value) => new Promesse((resolve) => resolve(value * 2)))
+      .then((value) => value * 2);
+    // then
+    expect(result).toEqual(168);
+  });
 });
