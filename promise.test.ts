@@ -13,7 +13,8 @@ class Promesse {
     });
   }
 
-  then = (onFulfilled: (value: any) => any): Promesse => new Promesse((resolve) => resolve(onFulfilled(this.result)));
+  then = (onFulfilled: (value: any) => any): Promesse =>
+    new Promesse((resolve) => resolve(onFulfilled(this.result)));
 }
 
 describe("Promise from scratch", () => {
@@ -50,6 +51,22 @@ describe("Promise from scratch", () => {
     // when
     const result = await happyPathPromise
       .then((value) => new Promesse((resolve) => resolve(value * 2)))
+      .then((value) => value * 2);
+    // then
+    expect(result).toEqual(168);
+  });
+
+  it("should be chainable even when pending", async () => {
+    // given
+    const happyPathPromise = new Promesse((resolve) => {
+      resolve(42);
+    });
+    // when
+    const result = await happyPathPromise
+      .then(
+        (value) =>
+          new Promesse((resolve) => setTimeout(() => resolve(value * 2), 100))
+      )
       .then((value) => value * 2);
     // then
     expect(result).toEqual(168);
