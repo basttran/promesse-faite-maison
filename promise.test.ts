@@ -1,22 +1,3 @@
-class Promesse {
-  private result: any;
-
-  constructor(initTask: (resolve: any, reject?: any) => any) {
-    initTask((result) => {
-      if (result?.then) {
-        result.then((value) => {
-          this.result = value;
-        });
-      } else {
-        this.result = result;
-      }
-    });
-  }
-
-  then = (onFulfilled: (value: any) => any): Promesse =>
-    new Promesse((resolve) => resolve(onFulfilled(this.result)));
-}
-
 describe("Promise from scratch", () => {
   it("should give back result when task was successful", async () => {
     // given
@@ -72,3 +53,35 @@ describe("Promise from scratch", () => {
     expect(result).toEqual(168);
   });
 });
+
+class Promesse {
+  private result: any;
+  status: string = "pending";
+  todos: any[] = [];
+
+  constructor(initTask: (resolve: any, reject?: any) => any) {
+    initTask((result: any) => {
+      if (result?.then) {
+        result.then((value: any) => {
+          this.status = "resolved";
+          this.result = value;
+          this.todos.forEach((handle) => handle(value));
+        });
+      } else {
+        this.status = "resolved";
+        this.result = result;
+        this.todos.forEach((handle) => handle(result));
+      }
+    });
+  }
+
+  then = (onFulfilled: (value: any) => any): Promesse => {
+    if (this.status === "resolved") {
+      return new Promesse((resolve) => resolve(onFulfilled(this.result)));
+    }
+
+    return new Promesse((resolve) =>
+      this.todos.push((result) => resolve(onFulfilled(result)))
+    );
+  };
+}
